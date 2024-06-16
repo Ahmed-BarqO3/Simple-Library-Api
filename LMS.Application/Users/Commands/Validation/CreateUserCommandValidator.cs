@@ -17,6 +17,7 @@ namespace LMS.Application.Users.Commands.Validation
 
             RuleFor(x => x.ContactInformation)
                 .NotEmpty().WithMessage("Contact information is required")
+                .EmailAddress().WithMessage("Invalid email address")
                 .MaximumLength(50).WithMessage("Contact information must not exceed 50 characters");
         }
 
