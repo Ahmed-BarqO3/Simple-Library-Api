@@ -1,4 +1,5 @@
 using LMS.Application.Users;
+using LMS.Application.Users.Commands;
 using LMS.Application.Users.Query;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,19 @@ namespace LMS.Api.Controller
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(CreateUserCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result is not null)
+                return CreatedAtAction(nameof(GetUserById), new { id = result.UserId }, result);
+
+            return BadRequest();
+        }
+
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAllUserById(int id)
+        public async Task<IActionResult> GetUserById(int id)
         {
             var Query = new GetUserByIdQuery(id);
             var result = await _mediator.Send(Query);
@@ -39,7 +51,6 @@ namespace LMS.Api.Controller
                 return Ok(result);
 
             return NoContent();
-
         }
     }
 }
