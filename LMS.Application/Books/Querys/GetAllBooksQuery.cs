@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LMS.Application.Response;
-using MediatR;
+using Mediator;
 
 namespace LMS.Application.Books.Querys;
-public class GetAllBooksQuery:IRequest<List<BookResponse>>
+public class GetAllBooksQuery : IRequest<List<BookResponse>>
 {
-  
+
 
 }

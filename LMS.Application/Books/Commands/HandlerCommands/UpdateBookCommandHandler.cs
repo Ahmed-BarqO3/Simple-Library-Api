@@ -2,7 +2,7 @@
 using LMS.Application.Response;
 using LMS.Core.Models;
 using Mapster;
-using MediatR;
+using Mediator;
 
 namespace LMS.Application.Books.Commands.HandlerCommands;
 public class UpdateBookCommandHandler : IRequestHandler<UpdateBookCommand, BookResponse>
@@ -15,12 +15,12 @@ public class UpdateBookCommandHandler : IRequestHandler<UpdateBookCommand, BookR
         _context = context;
     }
 
-    public async Task<BookResponse> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
+    public async ValueTask<BookResponse> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
     {
         var book = request.Adapt<Book>();
         _context.Books.Update(book);
         _context.Save();
 
-        return  request.Adapt<BookResponse>();
+        return request.Adapt<BookResponse>();
     }
 }

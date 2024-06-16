@@ -2,7 +2,7 @@
 using LMS.Application.Interface;
 using LMS.Application.Response;
 using Mapster;
-using MediatR;
+using Mediator;
 
 namespace LMS.Application.Books.Querys.HandlersQuerys;
 public class GetBookByIdHandel : IRequestHandler<GetBookByIdQuery, BookResponse>
@@ -14,7 +14,7 @@ public class GetBookByIdHandel : IRequestHandler<GetBookByIdQuery, BookResponse>
         _context = context;
     }
 
-    public async Task<BookResponse> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
+    public async ValueTask<BookResponse> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
     {
         var book = await _context.Books.GetByIdAsync(request.Id);
         return book.Adapt<BookResponse>();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LMS.Application.Books.Querys;
-using MediatR;
+using Mediator;
 using LMS.Application.Books.Commands;
 
 namespace LMS.Api.Controller;

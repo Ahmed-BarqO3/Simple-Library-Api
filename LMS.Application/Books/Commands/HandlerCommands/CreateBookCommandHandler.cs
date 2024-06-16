@@ -7,7 +7,7 @@ using LMS.Application.Interface;
 using LMS.Application.Response;
 using LMS.Core.Models;
 using Mapster;
-using MediatR;
+using Mediator;
 
 namespace LMS.Application.Books.Commands.HandlerCommands;
 internal class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, BookResponse>
@@ -19,20 +19,14 @@ internal class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, Boo
         _context = context;
     }
 
-    public async Task<BookResponse> Handle(CreateBookCommand request, CancellationToken cancellationToken)
+    public async ValueTask<BookResponse> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
-        //Book book = new Book
-        //{
-        //    Title = request.Title,
-        //    Isbn = request.Isbn,
-        //    PublicationDate = request.PublicationDate,
-        //    AdditionalDetails = request.AdditionalDetails
-        //};
 
-            Book book = request.Adapt<Book>();
 
-            await _context.Books.AddAsync(book);
-           _context.Save();
+        Book book = request.Adapt<Book>();
+
+        await _context.Books.AddAsync(book);
+        _context.Save();
 
         return request.Adapt<BookResponse>();
     }
