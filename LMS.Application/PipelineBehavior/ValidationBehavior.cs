@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using MediatR;
+using Mediator;
 
 namespace LMS.Application.PipelineBehavior;
-public class ValidationBehavior<TRequest,TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
@@ -11,9 +11,32 @@ public class ValidationBehavior<TRequest,TResponse> : IPipelineBehavior<TRequest
     {
         _validators = validators;
     }
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+
+    // public async ValueTask<TResponse> Handle(TRequest request, MessageHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    // {
+    //     var context = new ValidationContext<TRequest>(request);
+
+    //     var validationFailures = await Task.WhenAll(
+    //         _validators.Select(validator => validator.ValidateAsync(context)));
+
+    //     var errors = _validators
+    //              .Select(x => x.Validate(context))
+    //              .SelectMany(x => x.Errors)
+    //              .Where(x => x != null);
+
+    //     if (errors.Any())
+    //     {
+    //         throw new ValidationException(errors);
+    //     }
+
+    //     var response = await next();
+
+    //     return response;
+    // }
+
+    public async ValueTask<TResponse> Handle(TRequest message, CancellationToken cancellationToken, MessageHandlerDelegate<TRequest, TResponse> next)
     {
-        var context = new ValidationContext<TRequest>(request);
+        var context = new ValidationContext<TRequest>(message);
 
         var validationFailures = await Task.WhenAll(
             _validators.Select(validator => validator.ValidateAsync(context)));
@@ -28,9 +51,7 @@ public class ValidationBehavior<TRequest,TResponse> : IPipelineBehavior<TRequest
             throw new ValidationException(errors);
         }
 
-        var response = await next();
-
-        return response;
+        return await next(message, cancellationToken);
     }
 }
 
