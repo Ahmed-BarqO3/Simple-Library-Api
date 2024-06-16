@@ -18,10 +18,6 @@ namespace LMS.Application.Users.Commands.Validation
             RuleFor(x => x.ContactInformation)
                 .NotEmpty().WithMessage("Contact information is required")
                 .MaximumLength(50).WithMessage("Contact information must not exceed 50 characters");
-
-            RuleFor(x => x.LibraryCardNumber)
-                .NotEmpty().WithMessage("Library card number is required")
-                .MaximumLength(50).WithMessage("Library card number must not exceed 50 characters");
         }
 
     }
