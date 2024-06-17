@@ -18,8 +18,19 @@ namespace LMS.Api.Controller
         }
 
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UpdateUserCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (result is not null)
+                return NoContent();
+
+            return BadRequest();
+        }
+
         [HttpPost]
-        public async Task<IActionResult> CreateUser(CreateUserCommand command)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
         {
             var result = await _mediator.Send(command);
             if (result is not null)
