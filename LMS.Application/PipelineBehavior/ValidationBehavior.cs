@@ -12,28 +12,6 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
         _validators = validators;
     }
 
-    // public async ValueTask<TResponse> Handle(TRequest request, MessageHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-    // {
-    //     var context = new ValidationContext<TRequest>(request);
-
-    //     var validationFailures = await Task.WhenAll(
-    //         _validators.Select(validator => validator.ValidateAsync(context)));
-
-    //     var errors = _validators
-    //              .Select(x => x.Validate(context))
-    //              .SelectMany(x => x.Errors)
-    //              .Where(x => x != null);
-
-    //     if (errors.Any())
-    //     {
-    //         throw new ValidationException(errors);
-    //     }
-
-    //     var response = await next();
-
-    //     return response;
-    // }
-
     public async ValueTask<TResponse> Handle(TRequest message, CancellationToken cancellationToken, MessageHandlerDelegate<TRequest, TResponse> next)
     {
         var context = new ValidationContext<TRequest>(message);
