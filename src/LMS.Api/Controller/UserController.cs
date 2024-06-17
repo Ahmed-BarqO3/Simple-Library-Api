@@ -17,6 +17,15 @@ namespace LMS.Api.Controller
             _mediator = mediator;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result is not null)
+                return CreatedAtAction(nameof(GetUserById), new { id = result.UserId }, result);
+
+            return BadRequest();
+        }
 
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateUserCommand command)
@@ -28,17 +37,9 @@ namespace LMS.Api.Controller
 
             return BadRequest();
         }
+    
 
-        [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
-        {
-            var result = await _mediator.Send(command);
-            if (result is not null)
-                return CreatedAtAction(nameof(GetUserById), new { id = result.UserId }, result);
-
-            return BadRequest();
-        }
-
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var command = new DeleteUserCommand(id);
