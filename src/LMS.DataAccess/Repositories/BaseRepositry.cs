@@ -28,20 +28,35 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class, new()
     public IQueryable<T?> ExecuteStoredProc(string commandName) =>
     
         _context.Set<T>().FromSqlRaw(commandName);
-    
-    public async Task<T?> FindAsync(Expression<Func<T, bool>> match) =>
-    
-         await _context.Set<T>().FindAsync(match);
-    
-    public async Task<IEnumerable<T?>> GetAllAsync() =>
- 
-         await _context.Set<T>().ToListAsync();
 
-    public async Task<T?> GetByIdAsync(int id) =>
-    
-         await _context.Set<T>().FindAsync(id);
+    public async Task<T?> FindAsync(Expression<Func<T, bool>> match, string[] includes = null)
+    {
+        IQueryable<T> query = _context.Set<T>();
 
-  
-       
+        if (includes != null)
+            foreach (var incluse in includes)
+                query = query.Include(incluse);
+
+        return await query.FirstOrDefaultAsync(match);
+    }
+
+
+    public async Task<IEnumerable<T?>> GetAllAsync(string[] includes = null)
+    {
+        IQueryable<T> query = _context.Set<T>();
+
+        if (includes != null)
+            foreach (var incluse in includes)
+                query = query.Include(incluse);
+
+         return await query.ToListAsync();
+    }
+
+    public async Task<T?> GetByIdAsync(int id)
+    {
+        return  await _context.Set<T>().FindAsync(id);
+    }
+
+
 
 }
