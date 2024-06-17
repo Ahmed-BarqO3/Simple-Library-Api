@@ -4,7 +4,6 @@ using Mediator;
 namespace LMS.Application.Users.Commands;
 public class CreateUserCommand : IRequest<UserResponse>
 {
-    public int UserId { get; set; }
     public string Name { get; set; }
     public string ContactInformation { get; set; }
 
