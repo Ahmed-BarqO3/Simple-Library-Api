@@ -4,6 +4,7 @@ using LMS.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using LMS.Application.Interface;
 using LMS.Application;
+using LMS.Application.PipelineBehavior;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +37,7 @@ if(app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseFluentValidationExceptionHandler();
 
 app.UseAuthorization();
 
