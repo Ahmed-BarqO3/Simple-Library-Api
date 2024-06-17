@@ -39,6 +39,16 @@ namespace LMS.Api.Controller
             return BadRequest();
         }
 
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var command = new DeleteUserCommand(id);
+            var result = await _mediator.Send(command);
+            if (result is not null)
+                return NoContent();
+
+            return BadRequest();
+        }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
