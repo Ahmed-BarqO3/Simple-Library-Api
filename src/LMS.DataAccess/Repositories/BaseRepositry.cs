@@ -25,9 +25,9 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class, new()
     
         _context.Set<T>().Remove(entity);
        
-    public IQueryable<T?> ExecuteStoredProc(string commandName) =>
+    public async Task<IEnumerable<T?>> ExecuteStoredProc(string commandName) =>
     
-        _context.Set<T>().FromSqlRaw(commandName);
+       await _context.Set<T>().FromSqlRaw(commandName).ToListAsync();
 
     public async Task<T?> FindAsync(Expression<Func<T, bool>> match, string[] includes = null)
     {
@@ -38,6 +38,16 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class, new()
                 query = query.Include(incluse);
 
         return await query.FirstOrDefaultAsync(match);
+    }
+    public async Task<IEnumerable<T?>> FindAllAsync(Expression<Func<T, bool>> match, string[] includes = null)
+    {
+        IQueryable<T> query = _context.Set<T>();
+
+        if (includes != null)
+            foreach (var incluse in includes)
+                query = query.Include(incluse);
+
+        return await query.Where(match).ToListAsync();
     }
 
 
@@ -51,12 +61,8 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class, new()
 
          return await query.ToListAsync();
     }
-
     public async Task<T?> GetByIdAsync(int id)
     {
-        return  await _context.Set<T>().FindAsync(id);
+        return await _context.Set<T>().FindAsync(id);
     }
-
-
-
 }

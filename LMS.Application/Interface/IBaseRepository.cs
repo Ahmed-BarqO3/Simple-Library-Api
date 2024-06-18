@@ -10,5 +10,6 @@ public interface IBaseRepository<T> where T : class, new()
     void Update(T entity);
     void Delete(T id);
     Task<T?> FindAsync(Expression<Func<T, bool>> predicate,string[] includes = null);
-    IQueryable<T?> ExecuteStoredProc(string commandName);
+    Task<IEnumerable<T?>>FindAllAsync(Expression<Func<T, bool>> predicate,string[] includes = null);
+    Task<IEnumerable<T?>> ExecuteStoredProc(string commandName);
 }
