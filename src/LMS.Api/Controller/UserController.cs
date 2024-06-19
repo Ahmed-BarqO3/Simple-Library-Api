@@ -64,7 +64,7 @@ namespace LMS.Api.Controller
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] PaginationQuery paginationQuery)
         {
-            var pagination = paginationQuery.Adapt<PaginationFilter>();
+            var pagination = new PaginationFilter(paginationQuery.pageSize,paginationQuery.pageNumber);
             var Query = new GetAllUsersQuery(pagination);
             var result = await _mediator.Send(Query);
 

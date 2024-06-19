@@ -41,7 +41,7 @@ public class BookCopyController(IMediator _mediator,IUriService _uri) : Controll
     [HttpGet]
     public async Task<IActionResult> GetBooksCopies([FromQuery] PaginationQuery paginationQuery)
     {
-        var pagination = paginationQuery.Adapt<PaginationFilter>();
+        var pagination = new PaginationFilter(paginationQuery.pageSize,paginationQuery.pageNumber);
 
         var query = new GetAllCopiesQuery(pagination);
         var result = await _mediator.Send(query);

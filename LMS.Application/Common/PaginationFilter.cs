@@ -5,13 +5,13 @@ public class PaginationFilter
     public  int pageSize { get; set; }
     public  int pageNumber { get; set; }
     
-    public PaginationFilter()
+    public PaginationFilter(int size,int number)
     {
-        this.pageNumber = pageNumber < 1 ? 1 : pageNumber;
-        this.pageSize = pageSize > 100
+        this.pageNumber = number < 1 ? 1 : number;
+        this.pageSize = size > 100
             ? 100 
-            : pageSize < 1
+            : size < 1
             ? 10
-            : pageSize;
+            : size;
     }
 }
