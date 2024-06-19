@@ -3,12 +3,7 @@ using Mediator;
 
 namespace LMS.Application.BookCopys.Query;
 
-public class GetBookCopyQuery :IRequest<BookCopyResponse>
+public class GetBookCopyQuery(int id) : IRequest<BookCopyResponse>
 {
-    public int Id { get; set; }
-
-    public GetBookCopyQuery(int id)
-    {
-        Id = id;
-    }
+    public int Id => id;
 }

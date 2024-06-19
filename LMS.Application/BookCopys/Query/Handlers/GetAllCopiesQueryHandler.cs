@@ -5,18 +5,14 @@ using Mediator;
 
 namespace LMS.Application.BookCopys.Query.Handlers;
 
-public class GetAllCopiesQueryHandler : IRequestHandler<GetAllCopiesQuery,List<BookCopyResponse>>
+public class GetAllCopiesQueryHandler(IUnitOfWork context) : IRequestHandler<GetAllCopiesQuery, List<BookCopyResponse>>
 {
-    private readonly IUnitOfWork _context;
-
-    public GetAllCopiesQueryHandler(IUnitOfWork context)
-    {
-        _context = context;
-    }
-
     public async ValueTask<List<BookCopyResponse>> Handle(GetAllCopiesQuery request, CancellationToken cancellationToken)
     {
-        var copies = await _context.BookCopies.GetAllAsync(new []{"Book"});
+        var copies =
+            await context.BookCopies.GetAllAsync(request.PaginationQuery.pageSize, request.PaginationQuery.pageNumber,
+                includes: new[] { "Book" });
+        
         return copies.Adapt<List<BookCopyResponse>>();
     }
 }

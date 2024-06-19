@@ -2,25 +2,23 @@
 using LMS.Application.Books.Querys;
 using Mediator;
 using LMS.Application.Books.Commands;
+using LMS.Application.Common;
+using LMS.Application.Common.Helpers;
+using LMS.Application.Interface;
+using LMS.Application.Response;
+using Mapster;
 
 namespace LMS.Api.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BookController : ControllerBase
+public class BookController(IUriService _uri,IMediator _mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public BookController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpPost]
     public async Task<IActionResult> CreateBook([FromBody] CreateBookCommand command)
     {
         var result = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetByID), new { BookId = result.BookId }, result);
+        return CreatedAtAction(nameof(GetByID), new { id = result.BookId }, result);
     }
 
     [HttpPut]
@@ -44,11 +42,16 @@ public class BookController : ControllerBase
     }
 
     [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAllBooks()
+    public async Task<IActionResult> GetAllBooks([FromQuery]PaginationQuery paginationQuery)
     {
-        var qury = new GetAllBooksQuery();
+        var pagination = paginationQuery.Adapt<PaginationFilter>();
+        var qury = new GetAllBooksQuery(pagination);
         var result = await _mediator.Send(qury);
+        
+        var paginationResponse =
+            PaginationHelper<BookResponse>.CreatePaginatedResponse(_uri, ApiRoutes.Book.Get, pagination,
+                result);
 
-        return Ok(result);
+        return Ok(paginationResponse);
     }
 }

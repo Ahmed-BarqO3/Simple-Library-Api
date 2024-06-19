@@ -18,8 +18,21 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
   </ItemGroup>
 
+    
+
   <ItemGroup>
     <ProjectReference Include="..\src\LMS.Core\LMS.Core.csproj" />
+  </ItemGroup>
+
+    
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
+      <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.6\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.WebUtilities">
+      <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.6\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

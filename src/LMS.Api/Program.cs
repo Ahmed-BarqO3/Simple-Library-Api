@@ -1,3 +1,4 @@
+using LMS.Api.Common;
 using LMS.Infrastructure;
 using LMS.Infrastructure.Data;
 using LMS.Infrastructure.Repositories;
@@ -11,9 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
+ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -21,9 +20,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("constr"));
 });
 
-builder.Services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
+
 
 
 

@@ -20,7 +20,8 @@ namespace LMS.Application.Users.Query.Handlers
 
         public async ValueTask<List<UserResponse>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            var users = await _context.Users.GetAllAsync();
+            var users = await _context.Users.GetAllAsync(request.PaginationQuery.pageSize,
+                request.PaginationQuery.pageNumber);
 
             return users.Adapt<List<UserResponse>>();
         }

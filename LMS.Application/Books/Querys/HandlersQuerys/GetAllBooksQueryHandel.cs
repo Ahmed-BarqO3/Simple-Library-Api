@@ -13,7 +13,9 @@ public class GetAllBooksQueryHandel : IRequestHandler<GetAllBooksQuery, List<Boo
     }
     public async ValueTask<List<BookResponse>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
     {
-        var books = await _context.Books.GetAllAsync();
+        var books = await _context.Books.GetAllAsync(request.PaginationQuery.pageSize,
+            request.PaginationQuery.pageNumber);
+        
         var result = books.Adapt<List<BookResponse>>();
 
         return result;

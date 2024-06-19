@@ -1,6 +1,11 @@
+using LMS.Application.Common;
+using LMS.Application.Common.Helpers;
+using LMS.Application.Interface;
+using LMS.Application.Response;
 using LMS.Application.Users;
 using LMS.Application.Users.Commands;
 using LMS.Application.Users.Query;
+using Mapster;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,15 +13,8 @@ namespace LMS.Api.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class UserController(IUriService _uri,IMediator _mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public UserController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
         {
@@ -64,15 +62,17 @@ namespace LMS.Api.Controller
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers([FromQuery] PaginationQuery paginationQuery)
         {
-            var Query = new GetAllUsersQuery();
+            var pagination = paginationQuery.Adapt<PaginationFilter>();
+            var Query = new GetAllUsersQuery(pagination);
             var result = await _mediator.Send(Query);
 
-            if (result is not null)
-                return Ok(result);
+            var paginationResponse =
+                PaginationHelper<UserResponse>.CreatePaginatedResponse(_uri, ApiRoutes.User.Get, pagination,
+                    result);
 
-            return NoContent();
+            return Ok(paginationResponse);
         }
     }
 }
