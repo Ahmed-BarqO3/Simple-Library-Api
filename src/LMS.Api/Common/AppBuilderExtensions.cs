@@ -2,7 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace LMS.Application.PipelineBehavior;
+namespace LMS.Api.Common;
 public static class AppBuilderExtensions
 {
     public static void UseFluentValidationExceptionHandler(this IApplicationBuilder app)
