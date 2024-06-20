@@ -1,48 +1,48 @@
 using System.Linq.Expressions;
 using LMS.Application.Interface;
 using LMS.Infrastructure.Data;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure.Repositories;
 public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
     where T : class, new()
 {
-    public async Task AddAsync(T entity) =>
+    public Task AddAsync(T entity) =>
 
-        await context.Set<T>().AddAsync(entity);
+        Task.FromResult(context.Set<T>().AddAsync(entity));
 
-    public void Update(T entity) =>
-
-      context.Set<T>().Update(entity);
-
-    public void Delete(T entity) =>
+    public Task Update(T entity) =>
     
-        context.Set<T>().Remove(entity);
+        Task.FromResult(context.Set<T>().Update(entity));
+    
+    public Task Delete(T entity) =>
+    
+        Task.FromResult(context.Set<T>().Remove(entity));
        
-    public async Task<IEnumerable<T?>> ExecuteStoredProc(string commandName) =>
+    public Task<List<T>> ExecuteStoredProc(string commandName) =>
     
-       await context.Set<T>().FromSqlRaw(commandName).ToListAsync();
+         context.Set<T>().FromSqlRaw(commandName).ToListAsync();
 
-    public async Task<T?> FindAsync(Expression<Func<T, bool>> match, string[]? includes = null)
+    public  Task<T?> FindAsync(Expression<Func<T, bool>> match, string[]? includes = null)
     {
         IQueryable<T> query = context.Set<T>();
 
         if (includes != null)
-            foreach (var incluse in includes)
-                query = query.Include(incluse);
+            foreach (var include in includes)
+                query = query.Include(include);
 
-        return await query.FirstOrDefaultAsync(match);
+        return  query.FirstOrDefaultAsync(match);
     }
-    public async Task<IEnumerable<T?>> FindAllAsync(Expression<Func<T, bool>> match,int? pageSize,int? pageNumber, string[]? includes = null)
+    public Task<List<T>> FindAllAsync(Expression<Func<T, bool>> match, int? pageSize, int? pageNumber = null,
+        string[]? includes = null)
     {
         IQueryable<T> query = context.Set<T>().Where(match);
 
         if (includes is not null)
-            foreach (var incluse in includes)
-                query = query.Include(incluse);
+            foreach (var include in includes)
+                query = query.Include(include);
         
-        if (pageNumber.HasValue)
+        if (pageNumber.HasValue && pageSize.HasValue)
         {
             query = query.Skip((pageNumber.Value - 1) * pageSize.Value);
         }
@@ -52,19 +52,18 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
             query = query.Take(pageSize.Value);
         }
 
-        return await query.ToListAsync();
+        return  query.ToListAsync();
     }
 
-
-    public async Task<IEnumerable<T?>> GetAllAsync(int? pageSize,int? pageNumber, string[]? includes = null)
+    public Task<List<T>> GetAllAsync(int? pageSize = null, int? pageNumber = null, string[]? includes = null)
     {
         IQueryable<T> query = context.Set<T>();
 
         if (includes is not null)
-            foreach (var incluse in includes)
-                query = query.Include(incluse);
-        
-        if (pageNumber.HasValue)
+            foreach (var include in includes)
+                query = query.Include(include);
+
+        if (pageNumber.HasValue && pageSize.HasValue)
         {
             query = query.Skip((pageNumber.Value - 1) * pageSize.Value);
         }
@@ -74,10 +73,11 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
             query = query.Take(pageSize.Value);
         }
 
-        return await query.ToListAsync();
+        return query.ToListAsync();
     }
-    public async Task<T?> GetByIdAsync(int id)
+
+    public  ValueTask<T?> GetByIdAsync(int id)
     {
-        return await context.Set<T>().FindAsync(id);
+        return  context.Set<T>().FindAsync(id);
     }
 }

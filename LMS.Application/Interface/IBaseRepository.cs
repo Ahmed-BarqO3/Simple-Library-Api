@@ -1,15 +1,17 @@
 using System.Linq.Expressions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace LMS.Application.Interface;
 public interface IBaseRepository<T> where T : class, new()
 {
-    Task<IEnumerable<T?>> GetAllAsync(int? pageSize = null,int? pageNumber = null,string[]? includes = null);
-    Task<T?> GetByIdAsync(int id);
+    Task<List<T>> GetAllAsync(int? pageSize = null, int? pageNumber = null, string[]? includes = null);
+    ValueTask<T?> GetByIdAsync(int id);
     Task AddAsync(T entity);
-    void Update(T entity);
-    void Delete(T id);
+    Task Update(T entity);
+    Task Delete(T id);
     Task<T?> FindAsync(Expression<Func<T, bool>> predicate,string[]? includes = null);
-    Task<IEnumerable<T?>>FindAllAsync(Expression<Func<T, bool>> predicate,int? pageSize = null,int? pageNumber = null,string[]? includes = null);
-    Task<IEnumerable<T?>> ExecuteStoredProc(string commandName);
+    Task<List<T>> FindAllAsync(Expression<Func<T, bool>> predicate, int? pageSize = null, int? pageNumber = null,
+        string[]? includes = null);
+    Task<List<T>> ExecuteStoredProc(string commandName);
 }
