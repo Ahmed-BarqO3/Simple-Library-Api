@@ -10,7 +10,7 @@ using Mapster;
 
 namespace LMS.Api.Controller;
 
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [ApiController]
 public class BookController(IUriService _uri,IMediator _mediator) : ControllerBase
 {

@@ -3,12 +3,7 @@ using Mediator;
 
 namespace LMS.Application.BookCopys.Commands;
 
-public class DeleteBookCopyCommand : IRequest<BookCopyResponse>
+public class DeleteBookCopyCommand(int copyId) : IRequest<BookCopyResponse>
 {
-    public DeleteBookCopyCommand(int copyId)
-    {
-        CopyId = copyId;
-    }
-
-    public int CopyId { get; set; }
+    public int CopyId { get;  } = copyId;
 }

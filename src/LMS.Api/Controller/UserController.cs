@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LMS.Api.Controller
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class UserController(IUriService _uri,IMediator _mediator) : ControllerBase
     {
         [HttpPost]

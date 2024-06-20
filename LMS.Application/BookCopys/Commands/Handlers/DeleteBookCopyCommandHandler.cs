@@ -5,23 +5,19 @@ using Mediator;
 
 namespace LMS.Application.BookCopys.Commands.Handlers;
 
-public class DeleteBookCopyCommandHandler : IRequestHandler<DeleteBookCopyCommand,BookCopyResponse>
+public class DeleteBookCopyCommandHandler(IUnitOfWork context)
+    : IRequestHandler<DeleteBookCopyCommand, BookCopyResponse>
 {
-    private readonly IUnitOfWork _context;
-
-    public DeleteBookCopyCommandHandler(IUnitOfWork context)
-    {
-        _context = context;
-    }
-
     public async ValueTask<BookCopyResponse> Handle(DeleteBookCopyCommand request, CancellationToken cancellationToken)
     {
-        var copy = await _context.BookCopies.GetByIdAsync(request.CopyId);
-        if (copy is not null)
+        var copy = await  context.BookCopies.GetByIdAsync(request.CopyId);
+        if (copy is null)
         {
-            _context.BookCopies.Delete(copy);
-            _context.Save();
+            return copy.Adapt<BookCopyResponse>();
         }
+
+        await context.BookCopies.Delete(copy);
+        context.Save();
         return copy.Adapt<BookCopyResponse>();
     }
 }

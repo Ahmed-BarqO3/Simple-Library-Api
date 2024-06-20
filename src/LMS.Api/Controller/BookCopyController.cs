@@ -3,39 +3,34 @@ using LMS.Application.BookCopys.Commands;
 using LMS.Application.BookCopys.Query;
 using LMS.Application.Response;
 using Mediator;
-using LMS.Api.Common;
 using LMS.Application.Common;
 using LMS.Application.Common.Helpers;
 using LMS.Application.Interface;
-using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Api.Controller;
 
 [ApiController]
-[Route("api/[controller]")]
-public class BookCopyController(IMediator _mediator,IUriService _uri) : ControllerBase
+[Route("api/v1/[controller]")]
+public class BookCopyController(IMediator mediator,IUriService uri) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreatBookCopy([FromBody] CreateBookCopyCommand command)
+    public async Task<IActionResult> CreatBookCopy([FromQuery] CreateBookCopyCommand command)
     {
-        var result = await _mediator.Send(command);
-        if (result is not null)
-            return CreatedAtAction(nameof(GetBookCopyById), new { id = result.CopyId }, result);
-
-        return BadRequest();
-
+        var result = await mediator.Send(command);
+        return CreatedAtAction(nameof(GetBookCopyById), new { id = result.CopyId }, result);
     }
 
     [HttpDelete]
     public async Task<IActionResult> DeleteCopy(int id)
     {
         var command = new DeleteBookCopyCommand(id);
-        var result = await _mediator.Send(command);
-        if (result is not null)
-            return NoContent();
+        var result = await mediator.Send(command);
+        if (result is null)
+            return BadRequest();
+        
+        return NoContent();
 
-        return BadRequest();
     }
 
     [HttpGet]
@@ -44,9 +39,9 @@ public class BookCopyController(IMediator _mediator,IUriService _uri) : Controll
         var pagination = new PaginationFilter(paginationQuery.pageSize,paginationQuery.pageNumber);
 
         var query = new GetAllCopiesQuery(pagination);
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
         var paginationResponse =
-            PaginationHelper<BookCopyResponse>.CreatePaginatedResponse(_uri, ApiRoutes.BookCopy.Get, pagination,
+            PaginationHelper<BookCopyResponse>.CreatePaginatedResponse(uri, ApiRoutes.BookCopy.Get, pagination,
                 result);
 
         return Ok(paginationResponse);
@@ -56,10 +51,10 @@ public class BookCopyController(IMediator _mediator,IUriService _uri) : Controll
     public async Task<IActionResult> GetBookCopyById(int id)
     {
         var query = new GetBookCopyQuery(id);
-        var result = await _mediator.Send(query);
-
-        if (result is not null)
-            return Ok(result);
-        return NotFound();
+        var result = await mediator.Send(query);
+        if (result is null)
+            return NotFound();
+        
+        return Ok(result);
     }
 }
