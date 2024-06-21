@@ -13,5 +13,6 @@ public interface IBaseRepository<T> where T : class, new()
     Task<T?> FindAsync(Expression<Func<T, bool>> predicate,string[]? includes = null);
     Task<List<T>> FindAllAsync(Expression<Func<T, bool>> predicate, int? pageSize = null, int? pageNumber = null,
         string[]? includes = null);
-    Task<List<T>> ExecuteStoredProc(string commandName);
+    Task<List<T>> GetByExecuteStoredProc(FormattableString commandName);
+    Task ExecuteStoredProcTask(FormattableString commandName);
 }

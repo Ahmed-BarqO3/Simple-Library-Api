@@ -19,15 +19,20 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
     
         Task.FromResult(context.Set<T>().Remove(entity));
        
-    public Task<List<T>> ExecuteStoredProc(string commandName) =>
+    public Task<List<T>> GetByExecuteStoredProc(FormattableString commandName) =>
     
-         context.Set<T>().FromSqlRaw(commandName).ToListAsync();
+         context.Set<T>().FromSql(commandName).ToListAsync();
+
+    public Task ExecuteStoredProcTask(FormattableString commandName)
+    {
+      return  Task.FromResult(context.Set<T>().FromSql(commandName));
+    }
 
     public  Task<T?> FindAsync(Expression<Func<T, bool>> match, string[]? includes = null)
     {
         IQueryable<T> query = context.Set<T>();
 
-        if (includes != null)
+        if (includes is not null)
             foreach (var include in includes)
                 query = query.Include(include);
 
@@ -76,7 +81,7 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
         return query.ToListAsync();
     }
 
-    public  ValueTask<T?> GetByIdAsync(int id)
+    public ValueTask<T?> GetByIdAsync(int id)
     {
         return  context.Set<T>().FindAsync(id);
     }
