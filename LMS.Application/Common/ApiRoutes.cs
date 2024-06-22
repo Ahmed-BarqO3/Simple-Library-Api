@@ -18,6 +18,11 @@ public static class ApiRoutes
     {
         public const string Get = Base + "/User";
     }
+    
+    public static class BorrowingRecord
+    {
+        public const string Get = Base + "/borrowingrecord";
+    }
 
     // Add other classes for other controllers as needed
 }
