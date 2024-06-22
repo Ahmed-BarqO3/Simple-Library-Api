@@ -35,4 +35,10 @@
     </Reference>
   </ItemGroup>
 
+    
+
+  <ItemGroup>
+    <Folder Include="BorrowingRecords\Commands\" />
+  </ItemGroup>
+
 </Project>
