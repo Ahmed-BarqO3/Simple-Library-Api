@@ -19,4 +19,16 @@ public class borrowingrecordController(IMediator mediator) : ControllerBase
 
         return Ok(reslut);
     }
+
+    [HttpGet("Id")]
+    public async Task<IActionResult> GetBorroingRecordById(int Id)
+    {
+        var qury = new GetBorrowingRecordByIdQuery(Id);
+        var result = await mediator.Send(qury);
+
+        if (result is null)
+            return NotFound();
+
+        return Ok(result);
+    }
 }
