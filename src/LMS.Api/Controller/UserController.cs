@@ -5,7 +5,6 @@ using LMS.Application.Response;
 using LMS.Application.Users;
 using LMS.Application.Users.Commands;
 using LMS.Application.Users.Query;
-using Mapster;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,11 +61,11 @@ namespace LMS.Api.Controller
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers([FromQuery] PaginationQuery paginationQuery)
+        public async Task<IActionResult> GetAllUsers([FromQuery] PaginationQuery paginationQuery,CancellationToken cancellationToken)
         {
             var pagination = new PaginationFilter(paginationQuery.pageSize,paginationQuery.pageNumber);
-            var Query = new GetAllUsersQuery(pagination);
-            var result = await _mediator.Send(Query);
+            var query = new GetAllUsersQuery(pagination);
+            var result = await _mediator.Send(query, cancellationToken);
 
             var paginationResponse =
                 PaginationHelper<UserResponse>.CreatePaginatedResponse(_uri, ApiRoutes.User.Get, pagination,

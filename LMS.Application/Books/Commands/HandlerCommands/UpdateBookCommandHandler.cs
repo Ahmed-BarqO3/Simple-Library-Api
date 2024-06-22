@@ -18,7 +18,7 @@ public class UpdateBookCommandHandler : IRequestHandler<UpdateBookCommand, BookR
     public async ValueTask<BookResponse> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
     {
         var book = request.Adapt<Book>();
-        _context.Books.Update(book);
+        await _context.Books.Update(book);
         _context.Save();
 
         return request.Adapt<BookResponse>();

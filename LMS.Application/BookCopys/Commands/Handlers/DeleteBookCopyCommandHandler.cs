@@ -10,7 +10,8 @@ public class DeleteBookCopyCommandHandler(IUnitOfWork context)
 {
     public async ValueTask<BookCopyResponse> Handle(DeleteBookCopyCommand request, CancellationToken cancellationToken)
     {
-        var copy = await  context.BookCopies.GetByIdAsync(request.CopyId);
+        var copy = await context.BookCopies.GetByIdAsync(request.CopyId);
+
         if (copy is null)
         {
             return copy.Adapt<BookCopyResponse>();
@@ -18,6 +19,7 @@ public class DeleteBookCopyCommandHandler(IUnitOfWork context)
 
         await context.BookCopies.Delete(copy);
         context.Save();
+
         return copy.Adapt<BookCopyResponse>();
     }
 }

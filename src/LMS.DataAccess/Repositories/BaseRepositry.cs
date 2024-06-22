@@ -28,7 +28,7 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
       return  Task.FromResult(context.Set<T>().FromSql(commandName));
     }
 
-    public  Task<T?> FindAsync(Expression<Func<T, bool>> match, string[]? includes = null)
+    public  Task<T?> FindAsync(Expression<Func<T, bool>> match, string[]? includes = null,CancellationToken? ct = null)
     {
         IQueryable<T> query = context.Set<T>();
 
@@ -36,10 +36,10 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
             foreach (var include in includes)
                 query = query.Include(include);
 
-        return  query.FirstOrDefaultAsync(match);
+        return  query.FirstOrDefaultAsync(match,ct ?? CancellationToken.None);
     }
     public Task<List<T>> FindAllAsync(Expression<Func<T, bool>> match, int? pageSize, int? pageNumber = null,
-        string[]? includes = null)
+        string[]? includes = null,CancellationToken? ct = null)
     {
         IQueryable<T> query = context.Set<T>().Where(match);
 
@@ -57,10 +57,10 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
             query = query.Take(pageSize.Value);
         }
 
-        return  query.ToListAsync();
+        return  query.ToListAsync(ct ?? CancellationToken.None);
     }
 
-    public Task<List<T>> GetAllAsync(int? pageSize = null, int? pageNumber = null, string[]? includes = null)
+    public Task<List<T>> GetAllAsync(CancellationToken ct,int? pageSize = null, int? pageNumber = null, string[]? includes = null )
     {
         IQueryable<T> query = context.Set<T>();
 
@@ -78,7 +78,7 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
             query = query.Take(pageSize.Value);
         }
 
-        return query.ToListAsync();
+        return query.ToListAsync(cancellationToken: ct);
     }
 
     public ValueTask<T?> GetByIdAsync(int id)

@@ -6,21 +6,18 @@ using Mediator;
 
 namespace LMS.Application.Users.Commands.Handlers
 {
-    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserResponse>
+    public class UpdateUserCommandHandler(IUnitOfWork context) : IRequestHandler<UpdateUserCommand, UserResponse>
     {
-        readonly IUnitOfWork _context;
-
-        public UpdateUserCommandHandler(IUnitOfWork context)
-        {
-            _context = context;
-        }
-
         public async ValueTask<UserResponse> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             var user = request.Adapt<User>();
 
-            _context.Users.Update(user);
-            _context.Save();
+            if (user is null)
+            {
+                return user.Adapt<UserResponse>();
+            }
+            await context.Users.Update(user);
+            context.Save();
 
             return user.Adapt<UserResponse>();
         }

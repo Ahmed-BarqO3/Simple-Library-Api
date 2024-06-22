@@ -34,12 +34,12 @@ public class BookCopyController(IMediator mediator,IUriService uri) : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetBooksCopies([FromQuery] PaginationQuery paginationQuery)
+    public async Task<IActionResult> GetBooksCopies([FromQuery] PaginationQuery paginationQuery,CancellationToken cancellationToken)
     {
         var pagination = new PaginationFilter(paginationQuery.pageSize,paginationQuery.pageNumber);
 
         var query = new GetAllCopiesQuery(pagination);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query,cancellationToken);
         var paginationResponse =
             PaginationHelper<BookCopyResponse>.CreatePaginatedResponse(uri, ApiRoutes.BookCopy.Get, pagination,
                 result);

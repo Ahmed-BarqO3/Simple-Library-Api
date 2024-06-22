@@ -41,12 +41,12 @@ public class BookController(IUriService _uri,IMediator _mediator) : ControllerBa
         return Ok(result);
     }
 
-    [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAllBooks([FromQuery]PaginationQuery paginationQuery)
+    [HttpGet]
+    public async Task<IActionResult> GetAllBooks([FromQuery]PaginationQuery paginationQuery,CancellationToken cancellationToken)
     {
         var pagination = new PaginationFilter(paginationQuery.pageSize,paginationQuery.pageNumber);
         var qury = new GetAllBooksQuery(pagination);
-        var result = await _mediator.Send(qury);
+        var result = await _mediator.Send(qury,cancellationToken);
         
         var paginationResponse =
             PaginationHelper<BookResponse>.CreatePaginatedResponse(_uri, ApiRoutes.Book.Get, pagination,

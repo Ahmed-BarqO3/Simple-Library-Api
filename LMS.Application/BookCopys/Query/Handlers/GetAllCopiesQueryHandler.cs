@@ -10,7 +10,7 @@ public class GetAllCopiesQueryHandler(IUnitOfWork context) : IRequestHandler<Get
     public async ValueTask<List<BookCopyResponse>> Handle(GetAllCopiesQuery request, CancellationToken cancellationToken)
     {
         var copies =
-            await context.BookCopies.GetAllAsync(request.PaginationQuery.pageSize, request.PaginationQuery.pageNumber,
+            await context.BookCopies.GetAllAsync(cancellationToken,request.PaginationQuery.pageSize, request.PaginationQuery.pageNumber,
                 includes: new[] { "Book" });
         
         return copies.Adapt<List<BookCopyResponse>>();

@@ -5,7 +5,7 @@ namespace LMS.Application.Common;
 
 public class UriService(string _baseUri) : IUriService
 {
-    public Uri GetAllPageUri(string route, PaginationQuery paginationQuery)
+    public Uri GetAllPageUri(string route, PaginationQuery? paginationQuery)
     {
         if (paginationQuery is null)
             return new Uri(_baseUri);

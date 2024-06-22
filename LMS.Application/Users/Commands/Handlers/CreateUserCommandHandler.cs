@@ -10,21 +10,14 @@ using Mapster;
 using Mediator;
 
 namespace LMS.Application.Users.Commands.Handlers;
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserResponse>
+public class CreateUserCommandHandler(IUnitOfWork context) : IRequestHandler<CreateUserCommand, UserResponse>
 {
-    private readonly IUnitOfWork _context;
-
-    public CreateUserCommandHandler(IUnitOfWork context)
-    {
-        _context = context;
-    }
-
     public async ValueTask<UserResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var user = request.Adapt<User>();
-        await _context.Users.AddAsync(user);
+        await context.Users.AddAsync(user);
 
-        _context.Save();
+        context.Save();
 
         return user.Adapt<UserResponse>();
     }
