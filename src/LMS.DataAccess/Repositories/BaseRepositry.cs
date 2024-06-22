@@ -2,14 +2,15 @@ using System.Linq.Expressions;
 using LMS.Application.Interface;
 using LMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace LMS.Infrastructure.Repositories;
 public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
     where T : class, new()
 {
-    public Task AddAsync(T entity) =>
+    public ValueTask<EntityEntry<T>> AddAsync(T entity) =>
 
-        Task.FromResult(context.Set<T>().AddAsync(entity));
+        context.Set<T>().AddAsync(entity);
 
     public Task Update(T entity) =>
     
