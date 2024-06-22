@@ -1,4 +1,5 @@
 using System.Reflection;
+using LMS.Application.BorrowingRecords.Commands;
 using LMS.Application.BorrowingRecords.Query;
 using LMS.Application.Common;
 using Mediator;
@@ -9,6 +10,29 @@ namespace LMS.Api.Controller;
 [ApiController]
 public class borrowingrecordController(IMediator mediator) : ControllerBase
 {
+
+    [HttpPost]
+    public async Task<IActionResult> AddBorroiwngRecord(CreateBorrowingRecordCommand command)
+    {
+        var reslut = await mediator.Send(command);
+        
+        if(reslut is not null)
+            return Ok(reslut);
+
+        return BadRequest();
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> UpdateBorroiwngRecord(UpdateBorrowingRecordCommand command)
+    {
+        var reslut = await mediator.Send(command);
+        
+        if(reslut is not null)
+            return Ok(reslut);
+
+        return BadRequest();
+    }
+    
     [HttpGet]
     public async  Task<IActionResult> GetBorrowingRecords([FromQuery] PaginationQuery paginationQuery,CancellationToken cancellationToken)
     {
