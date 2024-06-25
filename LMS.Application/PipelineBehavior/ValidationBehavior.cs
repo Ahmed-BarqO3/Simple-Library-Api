@@ -2,7 +2,7 @@
 using Mediator;
 
 namespace LMS.Application.PipelineBehavior;
-public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest> validators)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
@@ -10,17 +10,11 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
     {
         var context = new ValidationContext<TRequest>(message);
 
-        var validationFailures = await Task.WhenAll(
-            validators.Select(validator => validator.ValidateAsync(context, cancellationToken)));
+        var validationResult = await validators.ValidateAsync(context, cancellationToken);
 
-        var errors = validators
-                 .Select(x => x.Validate(context))
-                 .SelectMany(x => x.Errors)
-                 .Where(x => x != null);
-
-        if (errors.Any())
+        if (!validationResult.IsValid)
         {
-            throw new ValidationException(errors);
+            throw new ValidationException(validationResult.Errors);
         }
 
         return await next(message, cancellationToken);
