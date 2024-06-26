@@ -3,10 +3,11 @@ using Mediator;
 
 namespace LMS.Application.BorrowingRecords.Commands;
 
-public class CreateBorrowingRecordCommand : IRequest<BorrowingRecordResponse>
+public record CreateBorrowingRecordCommand : IRequest<BorrowingRecordResponse>
 {
     public int CopyId { get; set; }
     public int UserId { get; set; }
-    public DateOnly BorrowingDate { get; set; }
     public DateOnly DueDate { get; set; }
+    public readonly DateOnly BorrowingDate = DateOnly.FromDateTime(DateTime.Now);
+
 }
