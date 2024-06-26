@@ -10,7 +10,7 @@ public interface IUnitOfWork : IDisposable
     IBaseRepository<Fine> Fines { get; }
     IBaseRepository<InformationBook> InformationBooks { get; }
     IBaseRepository<Reservation> Reservations { get; }
-    IBaseRepository<Setting> Settings { get; }
+    IBaseRepository<Core.Models.Setting> Settings { get; }
     IBaseRepository<User> Users { get; }
         public int Save();
 }
