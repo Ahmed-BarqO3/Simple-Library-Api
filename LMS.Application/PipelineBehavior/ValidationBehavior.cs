@@ -2,23 +2,32 @@
 using Mediator;
 
 namespace LMS.Application.PipelineBehavior;
-public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest> validators)
+
+public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> _validators)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    public async ValueTask<TResponse> Handle(TRequest message, CancellationToken cancellationToken, MessageHandlerDelegate<TRequest, TResponse> next)
+    public async ValueTask<TResponse> Handle(TRequest message, CancellationToken cancellationToken,
+        MessageHandlerDelegate<TRequest, TResponse> next)
     {
-        var context = new ValidationContext<TRequest>(message);
-
-        var validationResult = await validators.ValidateAsync(context, cancellationToken);
-
-        if (!validationResult.IsValid)
+        if (_validators.Any())
         {
-            throw new ValidationException(validationResult.Errors);
+            var context = new ValidationContext<TRequest>(message);
+
+            var validationResults =
+                await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+            var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
+
+            if (failures.Any())
+            {
+                throw new ValidationException(failures);
+
+            }
         }
 
         return await next(message, cancellationToken);
     }
 }
+
 
 
