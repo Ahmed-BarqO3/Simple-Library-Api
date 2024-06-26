@@ -5,7 +5,7 @@ namespace LMS.Application.Interface;
 public interface IUnitOfWork : IDisposable
 {
     IBaseRepository<Book> Books { get; }
-    IBaseRepository<Core.Models.BookCopy> BookCopies { get; }
+    IBaseRepository<BookCopy> BookCopies { get; }
     IBaseRepository<BorrowingRecord> BorrowingRecords { get; }
     IBaseRepository<Fine> Fines { get; }
     IBaseRepository<InformationBook> InformationBooks { get; }

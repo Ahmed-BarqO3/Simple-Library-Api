@@ -5,9 +5,9 @@ using Mediator;
 
 namespace LMS.Application.BorrowingRecords.Query.Handlers;
 
-public class GetBorrowingRecordByIdQueryHandler(IUnitOfWork context) : IRequestHandler<GetBorrowingRecordByIdQuery,BorrowingRecordResponse>
+public class GetBorrowingRecordByIdQueryHandler(IUnitOfWork context) : IRequestHandler<GetBorrowingRecordByIdQuery,BorrowingRecordResponse?>
 {
-    public async ValueTask<BorrowingRecordResponse> Handle(GetBorrowingRecordByIdQuery request, CancellationToken cancellationToken)
+    public async ValueTask<BorrowingRecordResponse?> Handle(GetBorrowingRecordByIdQuery request, CancellationToken cancellationToken)
     {
         var record  = await context.BorrowingRecords.GetByIdAsync(request.Id);
         return record.Adapt<BorrowingRecordResponse>();

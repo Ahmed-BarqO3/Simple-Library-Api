@@ -54,10 +54,11 @@ namespace LMS.Api.Controller
             var Query = new GetUserByIdQuery(id);
             var result = await _mediator.Send(Query);
 
-            if (result is not null)
-                return Ok(result);
+            if (result is null)
+                return NotFound();
 
-            return NotFound();
+            return Ok(result);
+
         }
 
         [HttpGet]

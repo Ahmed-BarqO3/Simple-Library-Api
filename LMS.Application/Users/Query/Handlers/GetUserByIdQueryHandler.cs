@@ -5,20 +5,13 @@ using Mediator;
 
 namespace LMS.Application.Users.Query.Handlers
 {
-    public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserResponse>
+    public class GetUserByIdQueryHandler(IUnitOfWork context) : IRequestHandler<GetUserByIdQuery, UserResponse?>
     {
-        private readonly IUnitOfWork _context;
-
-        public GetUserByIdQueryHandler(IUnitOfWork context)
+        public async ValueTask<UserResponse?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
-            _context = context;
-        }
+            var user = await context.Users.GetByIdAsync(request.UserId);
 
-        public async ValueTask<UserResponse> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
-        {
-            var user = await _context.Users.GetByIdAsync(request.UserId);
-
-            return user.Adapt<UserResponse>();
+            return user.Adapt<UserResponse?>();
         }
     }
 }

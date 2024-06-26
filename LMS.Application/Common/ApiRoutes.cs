@@ -28,6 +28,10 @@ public static class ApiRoutes
     {
         public const string Get = Base + "/fine";
     }
+    public static class Reservation
+    {
+        public const string Get = Base + "/reservation";
+    }
 
     // Add other classes for other controllers as needed
 }
