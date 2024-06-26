@@ -23,6 +23,11 @@ public static class ApiRoutes
     {
         public const string Get = Base + "/borrowingrecord";
     }
+    
+    public static class Fine
+    {
+        public const string Get = Base + "/fine";
+    }
 
     // Add other classes for other controllers as needed
 }
