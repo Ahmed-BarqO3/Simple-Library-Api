@@ -1,14 +1,17 @@
-using System.Reflection;
 using LMS.Application.BorrowingRecords.Commands;
 using LMS.Application.BorrowingRecords.Query;
 using LMS.Application.Common;
+using LMS.Application.Common.Helpers;
+using LMS.Application.Interface;
+using LMS.Application.Response;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Api.Controller;
+
 [Route("api/v1/[controller]")]
 [ApiController]
-public class borrowingrecordController(IMediator mediator) : ControllerBase
+public class borrowingrecordController(IMediator mediator,IUriService uri) : ControllerBase
 {
 
     [HttpPost]
@@ -34,14 +37,18 @@ public class borrowingrecordController(IMediator mediator) : ControllerBase
     }
     
     [HttpGet]
-    public async  Task<IActionResult> GetBorrowingRecords([FromQuery] PaginationQuery paginationQuery,CancellationToken cancellationToken)
+    public async Task<IActionResult> GetBorrowingRecords([FromQuery] PaginationQuery paginationQuery,
+        CancellationToken cancellationToken)
     {
         var pagination = new PaginationFilter(paginationQuery.pageSize, paginationQuery.pageNumber);
         var query = new GetBorrowingRecordsQuery(pagination);
 
-        var reslut = await mediator.Send(query, cancellationToken);
+        var result = await mediator.Send(query, cancellationToken);
+        var paginationResponse =
+            PaginationHelper<BorrowingRecordResponse>.CreatePaginatedResponse(uri, ApiRoutes.BorrowingRecord.Get, pagination,
+                result);
 
-        return Ok(reslut);
+        return Ok(paginationResponse);
     }
 
     [HttpGet("Id")]
