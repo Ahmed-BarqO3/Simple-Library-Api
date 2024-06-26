@@ -6,5 +6,5 @@ namespace LMS.Application.BorrowingRecords.Query;
 
 public class GetBorrowingRecordsQuery(PaginationFilter paginationQuery) : IRequest<List<BorrowingRecordResponse>>
 {
-    public PaginationFilter PaginationQuery = paginationQuery;
+    public PaginationFilter PaginationQuery => paginationQuery;
 }

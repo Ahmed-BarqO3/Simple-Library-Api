@@ -10,7 +10,7 @@ public class GetBorrowingRecordsQueryHandler(IUnitOfWork context) : IRequestHand
     public async ValueTask<List<BorrowingRecordResponse>> Handle(GetBorrowingRecordsQuery request, CancellationToken cancellationToken)
     {
         var record = await context.BorrowingRecords.GetAllAsync(cancellationToken, request.PaginationQuery.pageSize,
-            request.PaginationQuery.pageNumber,new []{"Copy","User"});
+            request.PaginationQuery.pageNumber);
         return record.Adapt<List<BorrowingRecordResponse>>();
     }
 }
