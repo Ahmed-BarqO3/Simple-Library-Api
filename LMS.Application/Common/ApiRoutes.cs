@@ -36,7 +36,9 @@ public static class ApiRoutes
     {
         public const string Get = Base + "/setting";
     }
-
-    // Add other classes for other controllers as needed
+    public static class InformationBook
+    {
+        public const string Get = Base + "/informationbook";
+    }
 }
 
