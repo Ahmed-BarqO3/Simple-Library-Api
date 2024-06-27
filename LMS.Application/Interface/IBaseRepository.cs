@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace LMS.Application.Interface;
@@ -13,5 +14,5 @@ public interface IBaseRepository<T> where T : class, new()
     Task<List<T>> FindAllAsync(Expression<Func<T, bool>> predicate, int? pageSize = null, int? pageNumber = null,
         string[]? includes = null,CancellationToken? ct = null);
     Task<List<T>> GetByExecuteStoredProc(FormattableString commandName);
-    Task ExecuteStoredProcTask(FormattableString commandName);
+    Task<T> ExecuteStoredProcTask(string commandName);
 }

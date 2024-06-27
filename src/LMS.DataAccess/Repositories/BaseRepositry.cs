@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using LMS.Application.Interface;
 using LMS.Infrastructure.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -24,10 +25,9 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
     
          context.Set<T>().FromSql(commandName).ToListAsync();
 
-    public Task ExecuteStoredProcTask(FormattableString commandName)
-    {
-      return  Task.FromResult(context.Set<T>().FromSql(commandName));
-    }
+    public async Task<T?> ExecuteStoredProcTask(string commandName) =>
+
+        context.Set<T>().FromSqlRaw(commandName).AsEnumerable().FirstOrDefault();
 
     public  Task<T?> FindAsync(Expression<Func<T, bool>> match, string[]? includes = null,CancellationToken? ct = null)
     {

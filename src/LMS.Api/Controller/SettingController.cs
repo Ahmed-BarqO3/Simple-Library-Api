@@ -13,7 +13,10 @@ public class SettingController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> UpdateSetting([FromQuery] UpdateSettingCommand command)
     {
         var result = await mediator.Send(command);
+        if(result is not null)
         return NoContent();
+
+        return BadRequest();
     }
     
     [HttpGet]

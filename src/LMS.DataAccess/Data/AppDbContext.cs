@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using LMS.Core.Models;
 
 namespace LMS.Infrastructure.Data;
@@ -61,10 +62,10 @@ public partial class AppDbContext : DbContext
             entity.HasKey(e => e.BorrowingRecordId).HasName("PK__Borrowin__D7C457FC843EDA3E");
 
             entity.ToTable(tb =>
-                {
-                    tb.HasTrigger("TR_BorrowingBook");
-                    tb.HasTrigger("TR_CanceleBorrowing");
-                });
+            {
+                tb.HasTrigger("TR_BorrowingBook");
+                tb.HasTrigger("TR_CanceleBorrowing");
+            });
 
             entity.HasOne(d => d.Copy).WithMany(p => p.BorrowingRecords)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -100,12 +101,12 @@ public partial class AppDbContext : DbContext
             entity.ToTable(tb => tb.HasTrigger("TR_ReservationBook"));
 
             entity.HasOne(d => d.Copy).WithMany(p => p.Reservations)
-            .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK__Reservati__CopyI__5070F446");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Reservati__CopyI__5070F446");
 
             entity.HasOne(d => d.User).WithMany(p => p.Reservations)
-            .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK__Reservati__UserI__4F7CD00D");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Reservati__UserI__4F7CD00D");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -113,8 +114,13 @@ public partial class AppDbContext : DbContext
             entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC23B1124F");
         });
 
-        OnModelCreatingPartial(modelBuilder);
+        modelBuilder.Entity<Setting>(e =>
+        {
+            e.HasNoKey();
+            OnModelCreatingPartial(modelBuilder);
+        });
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+    
