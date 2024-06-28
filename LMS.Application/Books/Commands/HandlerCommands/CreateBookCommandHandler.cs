@@ -5,7 +5,7 @@ using Mapster;
 using Mediator;
 
 namespace LMS.Application.Books.Commands.HandlerCommands;
-internal class CreateBookCommandHandler(IUnitOfWork context) : IRequestHandler<CreateBookCommand, BookResponse>
+public class CreateBookCommandHandler(IUnitOfWork context) : IRequestHandler<CreateBookCommand, BookResponse>
 {
     public async ValueTask<BookResponse> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {

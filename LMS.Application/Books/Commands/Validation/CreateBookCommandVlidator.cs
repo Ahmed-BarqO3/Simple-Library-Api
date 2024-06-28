@@ -7,6 +7,6 @@ public class CreateBookCommandVlidator: AbstractValidator<CreateBookCommand>
     {
         RuleFor(x => x.Title).MinimumLength(3);
         RuleFor(x => x.Isbn).NotEmpty().WithMessage("ISBN is required");
-        RuleFor(x => x.PublicationDate).NotEmpty().WithMessage("Publication Date is required");
+        RuleFor(x => x.PublicationDate).NotEmpty().LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Now));
     }
 }
