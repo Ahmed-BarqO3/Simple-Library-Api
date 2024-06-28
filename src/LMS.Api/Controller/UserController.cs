@@ -2,7 +2,6 @@ using LMS.Application.Common;
 using LMS.Application.Common.Helpers;
 using LMS.Application.Interface;
 using LMS.Application.Response;
-using LMS.Application.Users;
 using LMS.Application.Users.Commands;
 using LMS.Application.Users.Query;
 using Mediator;

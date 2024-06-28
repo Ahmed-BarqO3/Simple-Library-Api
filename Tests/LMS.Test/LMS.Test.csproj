@@ -24,6 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\LMS.Application\LMS.Application.csproj" />
+      <ProjectReference Include="..\..\src\LMS.Api\LMS.Api.csproj" />
     </ItemGroup>
 
 </Project>

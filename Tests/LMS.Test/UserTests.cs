@@ -1,15 +1,17 @@
 using FluentAssertions;
+using FluentValidation;
 using LMS.Application.Common;
 using LMS.Application.Interface;
 using LMS.Application.Response;
 using LMS.Application.Users.Commands;
 using LMS.Application.Users.Commands.Handlers;
+using LMS.Application.Users.Commands.Validation;
 using LMS.Application.Users.Query;
 using LMS.Application.Users.Query.Handlers;
 using LMS.Core.Models;
 using Mapster;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using NSubstitute;
+
 using NSubstitute.ReturnsExtensions;
 
 namespace LMS.Test;
@@ -17,7 +19,6 @@ namespace LMS.Test;
 public class UserTests
 {
     private readonly IUnitOfWork _context = Substitute.For<IUnitOfWork>();
-    private readonly IUriService _uri = Substitute.For<IUriService>();
 
     [Fact]
     public async Task GetByIdAsync_ShouldReturenUser_WhenUserExist()
@@ -111,7 +112,32 @@ public class UserTests
         // Assert
         Assert.Equal(user.Name, result.Name);
         Assert.Equal(user.ContactInformation, result.ContactInformation);
+        result.LibraryCardNumber.Should().NotBeNullOrWhiteSpace();
     }
+    
+    [Fact]
+    public  void CommandValidator_ShouldThrowValidationException_WhenCommandIsInvalid()
+    {
+        // Arrange
+        
+        // Create and Update commands are using the same validator
+        var validator = new CreateUserCommandValidator();
+        var command = new CreateUserCommand
+        {
+            Name = "", // Invalid name
+            ContactInformation = "" // Invalid email
+        };
+
+        // Act
+        Action act = () => validator.ValidateAndThrow(command);
+
+        // Assert
+        act.Should().Throw<ValidationException>()
+            .And.Message.Should().Contain("Name")
+            .And.Contain("ContactInformation");
+    }
+    
+    
     
     [Fact]
     public async Task UpdateAsync_ShouldReturnUserResponse_WhenUserUpdated()
@@ -138,7 +164,7 @@ public class UserTests
     }
     
     [Fact]
-    public async Task DeleteAsync_ShouldReturnTrue_WhenUserDeleted()
+    public async Task DeleteAsync_ShouldReturnUserResponse_WhenUserDeleted()
     {
         // Arrange
         var command = new DeleteUserCommand(1);
@@ -156,6 +182,20 @@ public class UserTests
         var result = await handler.Handle(command, CancellationToken.None);
         
         // Assert
-        result.Should().BeOfType<UserResponse>();
+        result.Should().BeEquivalentTo(user.Adapt<UserResponse>());
+    }
+    [Fact]
+    public async Task DeleteAsync_ShouldReturnNull_WhenUserNotExist()
+    {
+        // Arrange
+        var command = new DeleteUserCommand(1);
+        _context.Users.GetByIdAsync(1).ReturnsNull();
+        var handler = new DeleteUserCommandHandler(_context);
+        
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+        
+        // Assert
+        result.Should().BeNull();
     }
 }
