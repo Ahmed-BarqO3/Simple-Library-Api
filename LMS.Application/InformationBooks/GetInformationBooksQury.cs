@@ -5,15 +5,14 @@ using Mediator;
 
 namespace LMS.Application.InformationBooks;
 
-public record GetInformationBooksQury(): IRequest<List<InformationBook>>;
+public record GetInformationBooksQury(): IRequest<List<InformationBookResponse>>;
 
-
-class GetInformationBooksQuryHandler(IUnitOfWork context) : IRequestHandler<GetInformationBooksQury, List<InformationBook>>
+public class GetInformationBooksQuryHandler(IUnitOfWork context) : IRequestHandler<GetInformationBooksQury, List<InformationBookResponse>>
 {
-    public async ValueTask<List<InformationBook>> Handle(GetInformationBooksQury request, CancellationToken cancellationToken)
+    public async ValueTask<List<InformationBookResponse>> Handle(GetInformationBooksQury request, CancellationToken cancellationToken)
     {
         var books = await context.InformationBooks.GetByExecuteStoredProc($"SP_GetAllBooks");
         
-        return books.Adapt<List<InformationBook>>();
+        return books.Adapt<List<InformationBookResponse>>();
     }
 }
