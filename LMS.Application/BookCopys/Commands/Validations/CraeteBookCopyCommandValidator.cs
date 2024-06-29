@@ -6,6 +6,6 @@ public class CreateBookCopyCommandValidator : AbstractValidator<CreateBookCopyCo
 {
     public CreateBookCopyCommandValidator()
     {
-        RuleFor(i => i.BookId).NotEmpty().Must(x => x > 0);
+        RuleFor(i => i.BookId).NotNull().Must(x => x > 0);
     }
 }
