@@ -7,7 +7,6 @@ public class UpdateBorrowingValidator : AbstractValidator<UpdateBorrowingRecordC
 {
     public UpdateBorrowingValidator()
     {
-        RuleFor(x => x.BorrowingDate).Equals(DateOnly.FromDateTime(DateTime.Now));
         RuleFor(x => x.DueDate).GreaterThan(DateOnly.FromDateTime(DateTime.Now));
     }
 }

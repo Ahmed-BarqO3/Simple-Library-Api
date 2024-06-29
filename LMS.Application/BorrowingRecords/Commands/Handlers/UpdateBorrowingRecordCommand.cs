@@ -11,11 +11,10 @@ public class UpdateBorrowingRecordCommandHandler(IUnitOfWork context) : IRequest
    
     public async ValueTask<BorrowingRecordResponse> Handle(UpdateBorrowingRecordCommand request, CancellationToken cancellationToken)
     {
-        var record = await context.BorrowingRecords.GetByIdAsync(request.BorrowingRecordId);
-        var result = context.BorrowingRecords.Update(record.Adapt<BorrowingRecord>());
-
+       
+        context.BorrowingRecords.Update(request.Adapt<BorrowingRecord>());
         context.Save();
 
-        return result.Adapt<BorrowingRecordResponse>();
+        return request.Adapt<BorrowingRecordResponse>();
     }
 }
