@@ -7,9 +7,7 @@ namespace LMS.Application.Setting;
 
 public record GetSetting( ) : IRequest<SettingResponse>;
 
-
-
-class GetSettingHandler(IUnitOfWork context) : IRequestHandler<GetSetting, SettingResponse>
+public class GetSettingHandler(IUnitOfWork context) : IRequestHandler<GetSetting, SettingResponse>
 {
     public ValueTask<SettingResponse> Handle(GetSetting request, CancellationToken cancellationToken)
     {

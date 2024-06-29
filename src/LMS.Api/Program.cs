@@ -25,11 +25,11 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddInfrastructure();
 
-builder.Services.AddMediator(options =>
-{
-    //options.Namespace = "LMS.Application";
-    options.ServiceLifetime = ServiceLifetime.Transient;
-});
+// builder.Services.AddMediator(options =>
+// {
+//     //options.Namespace = "LMS.Application";
+//     //options.ServiceLifetime = ServiceLifetime.Transient;
+// });
 
 
 builder.Services.AddApplication();

@@ -37,6 +37,5 @@ public class UpdateSettingCommandValidator : AbstractValidator<UpdateSettingComm
     public UpdateSettingCommandValidator()
     {
         RuleFor(x => x.Setting.DefaultFinePerDay).GreaterThan(0);
-        RuleFor(x => x.Setting.DefualtBorrrowDays);
     }
 }
