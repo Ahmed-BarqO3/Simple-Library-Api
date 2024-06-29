@@ -54,7 +54,7 @@ public class BookTests
     }
     
     [Fact]
-    public void BookValidator_ShouldThrowValidationException_WhenCommandInvalid()
+    public void CreateCommandBookValidator_ShouldThrowValidationException_WhenCommandInvalid()
     {
         // Arrange
         var command = new CreateBookCommand()
@@ -63,6 +63,26 @@ public class BookTests
         };
         
         var validator = new CreateBookCommandVlidator();
+        // Act
+        Action act = () => validator.ValidateAndThrow(command);
+   
+        // Assert
+        act.Should().Throw<ValidationException>()
+            .And.Message.Should().Contain("Title")
+            .And.Contain("ISBN")
+            .And.Contain("Publication Date");
+    }
+    
+    [Fact]
+    public void UpdateCommandBookValidator_ShouldThrowValidationException_WhenCommandInvalid()
+    {
+        // Arrange
+        var command = new UpdateBookCommand()
+        {
+            Title = "", Isbn = "",PublicationDate = DateOnly.FromDateTime(DateTime.MaxValue)
+        };
+        
+        var validator = new UpdateBookCommandValidator();
         // Act
         Action act = () => validator.ValidateAndThrow(command);
    

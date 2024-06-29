@@ -9,5 +9,5 @@ public class CreateBookCopyCommand : IRequest<BookCopyResponse>
     {
         
     }
-    public int BookId { get; } 
+    public int BookId { get; set; } 
 }

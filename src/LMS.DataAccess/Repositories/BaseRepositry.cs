@@ -9,9 +9,10 @@ namespace LMS.Infrastructure.Repositories;
 public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T>
     where T : class, new()
 {
-    public ValueTask<EntityEntry<T>> AddAsync(T entity) =>
-
-        context.Set<T>().AddAsync(entity);
+    public Task AddAsync(T entity) =>
+    
+        Task.FromResult(context.Set<T>().AddAsync(entity));
+    
 
     public Task Update(T entity) =>
     

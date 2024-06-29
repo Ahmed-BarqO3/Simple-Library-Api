@@ -10,11 +10,11 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddMediator(options =>
-        {
-            options.Namespace = "LMS.Application";
-            options.ServiceLifetime = ServiceLifetime.Transient;
-        });
+        // services.AddMediator(options =>
+        // {
+        //     options.Namespace = "LMS.Application";
+        //     options.ServiceLifetime = ServiceLifetime.Transient;
+        // });
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PipelineBehavior.ValidationBehavior<,>));
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         
@@ -22,8 +22,8 @@ public static class DependencyInjection
         services.AddScoped<IUriService>(provider =>
         {
             var accessor = provider.GetRequiredService<IHttpContextAccessor>();
-            var request = accessor.HttpContext.Request;
-            var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+            var request = accessor.HttpContext?.Request;
+            var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
             return new UriService(uri);
         });
         

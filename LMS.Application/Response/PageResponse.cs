@@ -1,4 +1,4 @@
-namespace LMS.Api.Common;
+namespace LMS.Application.Response;
 
 public class PageResponse<T>
 {

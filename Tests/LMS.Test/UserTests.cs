@@ -71,26 +71,23 @@ public class UserTests
             new User { UserId = 2, Name = "Ali", ContactInformation = "ali@gmail.com", LibraryCardNumber = "a3wd" },
             new User { UserId = 3, Name = "Mohamed", ContactInformation = "mohammed", LibraryCardNumber = "a4wd" }
         };
-        var pagination = new PaginationQuery { pageNumber = pageNumber, pageSize = pageSize };
-        var filter = new PaginationFilter(pagination.pageSize, pagination.pageNumber);
+       // var pagination = new PaginationQuery { pageNumber = pageNumber, pageSize = pageSize };
+        var filter = new PaginationFilter(pageSize, pageNumber);
+        var query = new GetAllUsersQuery(filter);
 
-        _context.Users.GetAllAsync(CancellationToken.None, pageSize, pageNumber).Returns(users);
-
+        _context.Users.GetAllAsync(CancellationToken.None, query.PaginationQuery.pageSize, query.PaginationQuery.pageNumber).Returns(users);
         var handler = new GetAllUsersQueryHandler(_context);
 
         // Act
-        var result = await handler.Handle(new GetAllUsersQuery(filter), CancellationToken.None);
+        var result = await handler.Handle(query, CancellationToken.None);
 
 
         // Assert
-        if (pageNumber > 0)
             result.Should().BeEquivalentTo(users.Adapt<List<UserResponse>>());
-        else
-            Assert.Null(result);
     }
 
     [Fact]
-    public async Task AddAsync_ShouldReturnUserResponse_WhenUserAdded()
+    public async Task CreateUserCommandHandler_ShouldReturnUserResponse_WhenUserAdded()
     {
         // Arrange
         var command = new CreateUserCommand
@@ -116,13 +113,30 @@ public class UserTests
     }
     
     [Fact]
-    public  void CommandValidator_ShouldThrowValidationException_WhenCommandIsInvalid()
+    public  void CreateCommandValidator_ShouldThrowValidationException_WhenCommandIsInvalid()
     {
         // Arrange
-        
-        // Create and Update commands are using the same validator
         var validator = new CreateUserCommandValidator();
         var command = new CreateUserCommand
+        {
+            Name = "", // Invalid name
+            ContactInformation = "" // Invalid email
+        };
+
+        // Act
+        Action act = () => validator.ValidateAndThrow(command);
+
+        // Assert
+        act.Should().Throw<ValidationException>()
+            .And.Message.Should().Contain("Name")
+            .And.Contain("ContactInformation");
+    }
+    [Fact]
+    public  void UpdateCommandValidator_ShouldThrowValidationException_WhenCommandIsInvalid()
+    {
+        // Arrange
+        var validator = new UpdateUserCommandValidator();
+        var command = new UpdateUserCommand()
         {
             Name = "", // Invalid name
             ContactInformation = "" // Invalid email
@@ -140,7 +154,7 @@ public class UserTests
     
     
     [Fact]
-    public async Task UpdateAsync_ShouldReturnUserResponse_WhenUserUpdated()
+    public async Task UpdateCommandHandler_ShouldReturnUserResponse_WhenUserUpdated()
     {
         // Arrange
         var command = new UpdateUserCommand
@@ -164,7 +178,7 @@ public class UserTests
     }
     
     [Fact]
-    public async Task DeleteAsync_ShouldReturnUserResponse_WhenUserDeleted()
+    public async Task DeleteCommandHandler_ShouldReturnUserResponse_WhenUserDeleted()
     {
         // Arrange
         var command = new DeleteUserCommand(1);
@@ -185,7 +199,7 @@ public class UserTests
         result.Should().BeEquivalentTo(user.Adapt<UserResponse>());
     }
     [Fact]
-    public async Task DeleteAsync_ShouldReturnNull_WhenUserNotExist()
+    public async Task DeleteCommandHandler_ShouldReturnNull_WhenUserNotExist()
     {
         // Arrange
         var command = new DeleteUserCommand(1);

@@ -12,10 +12,6 @@ namespace LMS.Application.Users.Commands.Handlers
         {
             var user = request.Adapt<User>();
 
-            if (user is null)
-            {
-                return user.Adapt<UserResponse>();
-            }
             await context.Users.Update(user);
             context.Save();
 

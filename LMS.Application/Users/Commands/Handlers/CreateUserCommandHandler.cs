@@ -14,11 +14,16 @@ public class CreateUserCommandHandler(IUnitOfWork context) : IRequestHandler<Cre
 {
     public async ValueTask<UserResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = request.Adapt<User>();
-        await context.Users.AddAsync(user);
 
-        context.Save();
+        var response =  context.Users.AddAsync(request.Adapt<User>());
+        if (response.IsCompletedSuccessfully)
+        {
+            context.Save();
+            return request.Adapt<UserResponse>();
+        }
 
-        return user.Adapt<UserResponse>();
+        return null;
+
+
     }
 }

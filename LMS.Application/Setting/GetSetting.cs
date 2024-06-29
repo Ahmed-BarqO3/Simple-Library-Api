@@ -11,10 +11,10 @@ public record GetSetting( ) : IRequest<SettingResponse>;
 
 class GetSettingHandler(IUnitOfWork context) : IRequestHandler<GetSetting, SettingResponse>
 {
-    public async ValueTask<SettingResponse> Handle(GetSetting request, CancellationToken cancellationToken)
+    public ValueTask<SettingResponse> Handle(GetSetting request, CancellationToken cancellationToken)
     {
-        var setting = context.Settings.GetAllAsync(cancellationToken).Result.FirstOrDefault();
+        var setting =  context.Settings.GetAllAsync(cancellationToken).Result.FirstOrDefault();
 
-        return setting.Adapt<SettingResponse>();
+        return  ValueTask.FromResult(setting.Adapt<SettingResponse>());
     }
 }

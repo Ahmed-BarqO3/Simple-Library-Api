@@ -12,10 +12,13 @@ public class CreateBorrowingRecordCommandHandler(IUnitOfWork context) : IRequest
     public async ValueTask<BorrowingRecordResponse> Handle(CreateBorrowingRecordCommand request, CancellationToken cancellationToken)
     {
         var record = request.Adapt<BorrowingRecord>();
-        var reslut = await context.BorrowingRecords.AddAsync(record);
+        var reslut =  context.BorrowingRecords.AddAsync(record);
+        if (reslut.IsCompletedSuccessfully)
+        {
+            context.Save();
+            return reslut.Adapt<BorrowingRecordResponse>();
+        }
+        return null;
 
-        context.Save();
-
-        return reslut.Entity.Adapt<BorrowingRecordResponse>();
     }
 }
